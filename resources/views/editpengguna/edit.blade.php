@@ -6,26 +6,26 @@
     @csrf
   <div class="form-group">
     <label for="exampleInputEmail1">ID User</label>
-    <input type="text" name="login" class="form-control {{ $errors->first('login')? "is-invalid" : "" }}" id="login" value="{{ $pengguna->login ? $pengguna->login :old('login') }}  " readonly aria-describedby="emailHelp" placeholder="Tulis Id Anda">
+    <input type="text" name="login" class="form-control {{ $errors->first('login')? "is-invalid" : "" }}" id="login" value="{{ old('login') ? old('login') : $pengguna->login }}  " readonly aria-describedby="emailHelp" placeholder="Tulis Id Anda">
     <div class="invalid-feedback">
       {{ $errors->first('login')}}
     </div>
   </div>
   <div class="form-group">
     <label for="exampleInputPassword1">Password</label>
-    <input type="password" name="password" class="form-control"  id="password" placeholder="Password" required>
+    <input type="password" name="password" class="form-control"  id="password" placeholder="Di ini jika update password">
    
   </div>
   <div class="form-group">
     <label for="exampleInputEmail1">Email address</label>
-    <input type="email" class="form-control {{ $errors->first('email')? "is-invalid" : "" }}" id="email" value="{{ $pengguna->email ? $pengguna->email :old('email') }}" name="email" aria-describedby="emailHelp" placeholder="Isi Email Anda" required>
+    <input type="email" class="form-control {{ $errors->first('email')? "is-invalid" : "" }}" id="email" value="{{ old('email') ? old('email') : $pengguna->email}}" name="email" aria-describedby="emailHelp" placeholder="Isi Email Anda" required>
     <div class="invalid-feedback">
       {{ $errors->first('email')}}
     </div>
   </div>
   <div class="form-group">
     <label for="exampleInputEmail1">Deskripsi</label>
-    <textarea id="deskripsi" name="deskripsi"  class="form-control {{ $errors->first('deskripsi')? "is-invalid" : "" }}"  placeholder="Deskripsi">{{ $pengguna->deskripsi ? $pengguna->deskripsi :old('deskripsi') }}</textarea>
+    <textarea id="deskripsi" name="deskripsi"  class="form-control {{ $errors->first('deskripsi')? "is-invalid" : "" }}"  placeholder="Deskripsi">{{old('deskripsi') ? old('deskripsi') : $pengguna->deskripsi  }}</textarea>
     {{-- <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email"> --}}
     <div class="invalid-feedback">
       {{ $errors->first('deskripsi')}}

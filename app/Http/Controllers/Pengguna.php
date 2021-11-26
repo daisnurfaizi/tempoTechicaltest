@@ -35,7 +35,7 @@ class Pengguna extends Controller
     {
         $rules = [
             'login'                => 'required|unique:pengguna|max:30|min:4',
-            'email'                 => 'required|email|unique:pengguna,email||max:50',
+            'email'                 => 'required|email|unique:pengguna,email|max:50',
             'pswd'              => 'required|max:100',
             'deskripsi'             => 'required|max:150'
         ];
@@ -98,33 +98,70 @@ class Pengguna extends Controller
 
     public function update(Request $request)
     {
-        // dd($request->login);
-        $rules = [
-            'email'                 => 'required|email|unique:pengguna,email|max:50',
-            'password'              => 'required|max:100',
-            'deskripsi'             => 'required|max:150'
-        ];
+        $pengguna = ModelsPengguna::where('login', $request->login);
+        $datapengguna = $pengguna->first();
+        // dd($datapengguna->email==$request);
+        if ($datapengguna->email != $request->email) {
+            $rules = [
+                'email'                 => 'required|unique:pengguna|email|max:50',
+                'password'              => 'max:100',
+                'deskripsi'             => 'required|max:150'
+            ];
 
-        $messages = [
-            'email.required'        => 'Email wajib diisi',
-            'email.email'           => 'Email tidak valid',
-            'email.unique'          => 'Email sudah terdaftar',
-            'password.required'     => 'Password wajib diisi',
-            'deskripsi.max'         => 'Deskripsi tidak boleh lebih dari 150 karakter'
-        ];
+            $messages = [
+                'email.required'        => 'Email wajib diisi',
+                'email.email'           => 'Email tidak valid',
+                'email.unique'          => 'Email sudah terdaftar',
+                'password.max'     => 'Password maximal 100',
+                'deskripsi.max'         => 'Deskripsi tidak boleh lebih dari 150 karakter'
+            ];
 
-        $validator = Validator::make($request->all(), $rules, $messages);
+            $validator = Validator::make($request->all(), $rules, $messages);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput($request->all);
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput($request->all);
+            }
+        } else {
+            $rules = [
+                'email'                 => 'required|email|max:50',
+                'password'              => 'max:100',
+                'deskripsi'             => 'required|max:150'
+            ];
+
+            $messages = [
+                'email.required'        => 'Email wajib diisi',
+                'email.email'           => 'Email tidak valid',
+                // 'email.unique'          => 'Email sudah terdaftar',
+                'password.max'     => 'Password maximal 100',
+                'deskripsi.max'         => 'Deskripsi tidak boleh lebih dari 150 karakter'
+            ];
+
+            $validator = Validator::make($request->all(), $rules, $messages);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput($request->all);
+            }
         }
-        $pengguna = ModelsPengguna::where('login', $request->login)->update(
-            [
-                'pswd' => Hash::make($request->password),
-                'email' => $request->email,
-                'deskripsi' => $request->deskripsi
-            ]
-        );
+        // dd($request->login);
+
+        if (isset($request->password)) {
+            $pengguna = ModelsPengguna::where('login', $request->login)->update(
+                [
+                    'pswd' => Hash::make($request->password),
+                    'email' => $request->email,
+                    'deskripsi' => $request->deskripsi
+                ]
+            );
+        } else {
+            $pengguna->update(
+                [
+                    // 'pswd' => Hash::make($request->password),
+                    'email' => $request->email,
+                    'deskripsi' => $request->deskripsi
+                ]
+            );
+        }
+
 
         if ($pengguna) {
             return redirect('/')->with([
